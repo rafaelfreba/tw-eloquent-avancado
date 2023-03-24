@@ -6,10 +6,12 @@ use App\Scopes\VisibleScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Events\PostCreated;
 
 class Post extends Model
 {
+    use HasFactory;
     /**
      * Usa Soft deleting
      */
@@ -43,9 +45,9 @@ class Post extends Model
      *
      * @var array
      */
-    protected $dispatchesEvents = [
-        'created' => PostCreated::class
-    ];
+    // protected $dispatchesEvents = [
+    //     'created' => PostCreated::class
+    // ];
 
     /**
      * Anexa campo criado via assessor a serialização
@@ -59,16 +61,16 @@ class Post extends Model
      *
      * @return void
      */
-    protected static function boot()
-    {
-        parent::boot();
+    // protected static function boot()
+    // {
+    //     parent::boot();
 
-        static::addGlobalScope('orderByCreatedAt', function (Builder $builder) {
-            $builder->orderBy('created_at', 'desc');
-        });
+    //     static::addGlobalScope('orderByCreatedAt', function (Builder $builder) {
+    //         $builder->orderBy('created_at', 'desc');
+    //     });
 
-        static::addGlobalScope(new VisibleScope);
-    }
+    //     static::addGlobalScope(new VisibleScope);
+    // }
 
     /**
      * Mapeia o relacionamento com o model details
@@ -77,7 +79,7 @@ class Post extends Model
      */
     public function details()
     {
-        return $this->hasOne('App\Details', 'post_id', 'id')
+        return $this->hasOne(Details::class, 'post_id', 'id')
                     ->withDefault(function($details) {
                         $details->status = 'rascunho';
                         $details->visibility = 'privado';
@@ -91,7 +93,7 @@ class Post extends Model
      */
     public function comments()
     {
-        return $this->hasMany('App\Comment', 'post_id', 'id');
+        return $this->hasMany(Comment::class, 'post_id', 'id');
     }
 
     /**
@@ -101,8 +103,8 @@ class Post extends Model
      */
     public function categories()
     {
-        return $this->belongsToMany('App\Category', 'category_post', 'post_id', 'category_id')
-                    ->using('App\CategoryPost')
+        return $this->belongsToMany(Category::class, 'category_post', 'post_id', 'category_id')
+                    ->using(CategoryPost::class)
                     ->withTimestamps();
                     //->as('relacao')
                     //->wherePivot('active', 1);
@@ -116,7 +118,7 @@ class Post extends Model
      */
     public function ratings()
     {
-        return $this->morphMany('App\Rating', 'ratingable');
+        return $this->morphMany(Rating::class, 'ratingable');
     }
 
     /**

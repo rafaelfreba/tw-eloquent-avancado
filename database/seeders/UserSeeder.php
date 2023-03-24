@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
         //     'password' => bcrypt('1234')
         // ]);
 
-        dd(User::factory()->count(1)->make());
+        User::factory()->count(10)->create();
 
     }
 }

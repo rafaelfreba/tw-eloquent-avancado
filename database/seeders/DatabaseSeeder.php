@@ -23,6 +23,11 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         //registrar seed
-        $this->call(UserSeeder::class);
+        $this->call([
+            CategorySeeder::class,
+            CommentSeeder::class,
+            PostSeeder::class,
+            UserSeeder::class
+        ]);
     }
 }
